@@ -1,58 +1,216 @@
-# create-svelte
+# optimistikit
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Optimistic UI is not easy...but it can be easier then ever in SvelteKit with Optimistikit!
 
-Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
+> **Warning**
+>
+> This package is meant to be used with Svelte-Kit as the name suggest. Because it uses api that are **only** present in Svelte-Kit it will not work in your normal svelte project.
 
-## Creating a project
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-If you're seeing this, you've probably already done this step. Congrats!
+![npm](https://img.shields.io/npm/v/optimistikit)
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+![npm](https://img.shields.io/npm/dt/optimistikit)
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+![GitHub last commit](https://img.shields.io/github/last-commit/paoloricciuti/optimistikit)
 
-## Developing
+## Contributing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Contributions are always welcome!
 
-```bash
-npm run dev
+For the moment there's no code of conduct neither a contributing guideline but if you found a problem or have an idea feel free to [open an issue](https://github.com/paoloricciuti/optimistikit/issues/new)
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+If you want the fastest way to open a PR try out Codeflow
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+[![Open in Codeflow](https://developer.stackblitz.com/img/open_in_codeflow.svg)](https://pr.new/paoloricciuti/optimistikit/)
 
-## Building
+## Authors
 
-To build your library:
+-   [@paoloricciuti](https://www.github.com/paoloricciuti)
 
-```bash
-npm run package
-```
+## Installation
 
-To create a production version of your showcase app:
+Install optimistikit with npm
 
 ```bash
-npm run build
+  npm install optimistikit@latest
 ```
 
-You can preview the production build with `npm run preview`.
+## Usage/Examples
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+The concept behind optimistikit is quite straightforward. Instead of using the `data` props from SvelteKit you can call the function `optimistikit` and get back a function to call whenever data changes and an action to apply to all of your forms.
 
-## Publishing
+### Basic example
 
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
+Imagine you have this `+page.server.ts`
 
-To publish your library to [npm](https://www.npmjs.com):
+```ts
+export async function load() {
+	const comments = await db.select(comments);
+	return {
+		comments,
+	};
+}
 
-```bash
-npm publish
+export const actions = {
+	async add({ request }) {
+		const formData = await request.formData();
+		const new_comment = formData.get('comment');
+		if (new_comment) {
+			await db.insert(comments).values({
+				content: new_comment,
+			});
+		}
+	},
+};
 ```
+
+and this `+page.svelte`
+
+```svelte
+<script lang="ts">
+	export let data;
+</script>
+
+<form method="post" action="?/add">
+	<input name="comment" />
+	<button>Add comment</button>
+</form>
+<ul>
+	{#each data.comments as comment}
+		<li>{comment.content}</li>
+	{/each}
+</ul>
+```
+
+if you want to optimistically add the comment using `optimistikit` you would need the following updated to `+page.svelte`
+
+```svelte
+<script lang="ts">
+	import { optimistikit } from 'optimistikit';
+	export let data;
+	const { enhance, optimistic } = optimistikit<typeof data>();
+	$: optimistic_data = optimistic(data);
+</script>
+
+<form
+	use:enhance={(data, { formData }) => {
+		const new_comment = formData.get('comment');
+		if (new_comment) {
+			// just mutate `data`
+			data.comments.push({
+				content: new_comment,
+			});
+		}
+	}}
+	method="post"
+	action="?/add"
+>
+	<input name="comment" />
+	<button>Add comment</button>
+</form>
+<ul>
+	<!-- use `optimistic_data` instead of `data` -->
+	{#each $optimistic_data.comments as comment}
+		<li>{comment.content}</li>
+	{/each}
+</ul>
+```
+
+### Keyed forms
+
+Sometimes the resource that you are updating on the server is always the same resource (eg. updating a comment). When that's the case we want to cancel every concurrent request. You can do this by adding an unique `data-key` attribute to the form.
+
+```ts
+export async function load() {
+	const comments = await db.select(comments);
+	return {
+		comments,
+	};
+}
+
+export const actions = {
+	// other actions
+	async edit({ request }) {
+		const formData = await request.formData();
+		const new_comment = formData.get('comment');
+		const id = formData.get('id');
+		if (new_comment && id) {
+			await db
+				.update(comments)
+				.values({
+					content: new_comment,
+				})
+				.where({
+					id,
+				});
+		}
+	},
+};
+```
+
+and this is the `+page.svelte`
+
+```svelte
+<script lang="ts">
+	import { optimistikit } from 'optimistikit';
+	export let data;
+	const { enhance, optimistic } = optimistikit<typeof data>();
+	$: optimistic_data = optimistic(data);
+</script>
+
+<!-- rest of the page -->
+<ul>
+	<!-- use `optimistic_data` instead of `data` -->
+	{#each $optimistic_data.comments as comment}
+		<li>
+			<form
+				method="post"
+				action="?/edit"
+				data-key="edit-comment-{comment.id}"
+				use:enhance={(data, { formData }) => {
+					const new_comment = formData.get('comment');
+					const id = formData.get('id');
+					if (new_comment && id) {
+						const comment = data.comments.find((comment) => comment.id === id);
+						// just mutate `data`
+						comment.content = new_comment;
+					}
+				}}
+			>
+				<input name="id" type="hidden" value={comment.id} />
+				<input name="comment" value={comment.content} />
+				<button>Edit</button>
+			</form>
+		</li>
+	{/each}
+</ul>
+```
+
+### Use in nested components
+
+If you have a form in a nested component it can be tedious to pass either `data` or the `enhance` action around. To solver this problem there's another export from `optimistikit` that allows you to grab the action directly
+
+```svelte
+<script lang="ts">
+	import { get_action } from 'optimistikit';
+	import type { PageData } from './$types';
+
+	const enhance = get_action<PageData>();
+</script>
+
+<form
+	use:enhance={(data) => {
+		// your logic
+	}}
+>
+	<!-- your form -->
+</form>
+```
+
+### Options
+
+The function `optimistikit` can optionally receive an object as argument where you can specify two values:
+
+-   `key`: a string that allows you to have different actions/stores in the same route. Most of the times you will probably not need this since specifying a key also means that the updates from the forms will involve only the store returned from the `optimistic` function returned from this specific `optimistikit` function.
+-   `enhance`: some libraries like [superforms](https://superforms.rocks) provide a custom `enhance` function that is different from the one provided by SvelteKit. To allow you to use this libraries together with `optimistikit` you can pass a custom `enhance` function. It's important for this function to have the same signature as the sveltekit one.

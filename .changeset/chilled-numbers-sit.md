@@ -1,5 +1,0 @@
----
-"optimistikit": patch
----
-
-fix: readme

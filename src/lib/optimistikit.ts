@@ -2,6 +2,10 @@ import { applyAction, enhance as default_enhance } from '$app/forms';
 import { getContext, setContext } from 'svelte';
 import { writable } from 'svelte/store';
 import { invalidateAll } from '$app/navigation';
+import * as svelte from 'svelte';
+
+// @ts-expect-error unstate is only there with svelte 5;
+const unstate = svelte.unstate ? svelte.unstate : <T>(obj: T) => obj;
 
 type OptimistikitOptions = {
 	key: string;
@@ -16,7 +20,8 @@ export function optimistikit<T>(
 	let og_data: T;
 	function trigger() {
 		update((data) => {
-			let final_data = structuredClone(og_data ?? data);
+			// for svelte 5 i have to unstate or structuredClone will fail
+			let final_data = structuredClone(unstate(og_data ?? data));
 			updates.forEach((update) => {
 				if (update.data) {
 					final_data = update.data;

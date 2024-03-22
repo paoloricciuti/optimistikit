@@ -1,5 +1,11 @@
 # optimistikit
 
+## 0.0.5
+
+### Patch Changes
+
+- 30c3a3b: fix: make it work properly with svelte 5
+
 ## 0.0.4
 
 ### Patch Changes

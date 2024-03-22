@@ -1,5 +1,11 @@
 # optimistikit
 
+## 0.0.6
+
+### Patch Changes
+
+- b3a2f23: fix: changeset release
+
 ## 0.0.5
 
 ### Patch Changes

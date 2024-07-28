@@ -65,7 +65,7 @@
 		"svelte-check": "^3.8.4",
 		"tslib": "^2.6.3",
 		"typescript": "^5.5.4",
-		"typescript-eslint": "8.0.0-alpha.52",
+		"typescript-eslint": "8.0.0-alpha.54",
 		"vite": "^5.3.5",
 		"vitest": "^2.0.4"
 	},

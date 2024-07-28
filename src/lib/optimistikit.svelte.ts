@@ -1,11 +1,7 @@
 import { applyAction, enhance as default_enhance } from '$app/forms';
-import { getContext, setContext } from 'svelte';
-import { writable } from 'svelte/store';
 import { invalidateAll } from '$app/navigation';
-import * as svelte from 'svelte';
-
-// @ts-expect-error unstate is only there with svelte 5;
-const unstate = svelte.unstate ? svelte.unstate : <T>(obj: T) => obj;
+import { getContext, setContext } from 'svelte';
+import { SvelteSet } from 'svelte/reactivity';
 
 type OptimistikitOptions = {
 	key: string;
@@ -13,26 +9,26 @@ type OptimistikitOptions = {
 };
 
 export function optimistikit<T>(
+	og_data: () => T,
 	{ key = 'default', enhance = default_enhance } = {} as OptimistikitOptions,
 ) {
-	const { subscribe, update } = writable<T>();
-	const updates = new Set<{ optimistic_update: (data: T) => void; data?: T }>();
-	let og_data: T;
-	function trigger() {
-		update((data) => {
-			// for svelte 5 i have to unstate or structuredClone will fail
-			let final_data = structuredClone(unstate(og_data ?? data));
-			updates.forEach((update) => {
-				if (update.data) {
-					final_data = update.data;
-				} else {
-					update.optimistic_update(final_data);
-					update.data = final_data;
-				}
-			});
-			return final_data;
+	const data = $state($state.snapshot(og_data()) as T);
+
+	$effect(() => {
+		let final_data = $state.snapshot(og_data()) as T;
+		updates.forEach((update) => {
+			if (update.data) {
+				final_data = update.data;
+			} else {
+				update.optimistic_update(final_data);
+				update.data = $state.snapshot(final_data) as T;
+			}
 		});
-	}
+		for (const key in final_data) {
+			data[key] = final_data[key];
+		}
+	});
+	const updates = new SvelteSet<{ optimistic_update: (data: T) => void; data?: T }>();
 	const abort_controllers = new WeakMap<HTMLFormElement, AbortController>();
 	const updates_fns = new WeakMap<
 		HTMLFormElement,
@@ -56,7 +52,7 @@ export function optimistikit<T>(
 			if (!updates_fns.has(props.formElement)) {
 				updates_fns.set(
 					props.formElement,
-					key != null ? new Map([[key, new Set()]]) : new Set(),
+					key != null ? new Map([[key, new SvelteSet()]]) : new SvelteSet(),
 				);
 			}
 			const set_or_map = updates_fns.get(props.formElement)!;
@@ -66,7 +62,6 @@ export function optimistikit<T>(
 				set_or_map.add(update_fn);
 			}
 			updates.add(update_fn);
-			trigger();
 			return async ({ action, result }) => {
 				if (key) {
 					const set_or_map = updates_fns.get(props.formElement)!;
@@ -86,7 +81,6 @@ export function optimistikit<T>(
 				) {
 					applyAction(result);
 				}
-				trigger();
 			};
 		});
 		return {
@@ -100,10 +94,8 @@ export function optimistikit<T>(
 		optimistic_action,
 	});
 	return {
-		optimistic(data: T) {
-			og_data = data;
-			trigger();
-			return { subscribe };
+		get data() {
+			return data;
 		},
 		enhance: optimistic_action,
 	};

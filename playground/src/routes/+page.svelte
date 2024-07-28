@@ -2,14 +2,16 @@
 	import Component from './Component.svelte';
 	import { optimistikit } from 'optimistikit';
 
-	export let data;
+	const { data } = $props();
 
-	const { enhance, optimistic } = optimistikit<typeof data>();
+	const { enhance, data: optimistic_data } = optimistikit(() => data);
 
-	$: optimistic_data = optimistic(data);
+	const optimistic_list = $derived([...optimistic_data.list].sort((a, b) => a - b));
+	const list = $derived([...data.list].toSorted((a, b) => a - b));
 
-	$: optimistic_list = [...$optimistic_data.list].sort((a, b) => a - b);
-	$: list = [...data.list].sort((a, b) => a - b);
+	$effect(() => {
+		console.log(optimistic_data.count);
+	});
 </script>
 
 <form
@@ -30,10 +32,10 @@
 		data.count++;
 	}}
 >
-	<button data-testid="up-count">{data.count}</button>
+	<button data-testid="up-count">{optimistic_data.count}</button>
 </form>
 
-<Component count={$optimistic_data.count} />
+<Component count={optimistic_data.count} />
 
 <ul data-testid="optimistic-list">
 	{#each optimistic_list as list_elem}
@@ -48,7 +50,7 @@
 </ul>
 
 <p data-testid="optimistic-count">
-	{$optimistic_data.count}
+	{optimistic_data.count}
 </p>
 
 <p data-testid="count">

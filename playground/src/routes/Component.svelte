@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { get_action } from 'optimistikit';
+	import { getAction } from 'optimistikit';
 	import type { PageData } from './$types';
 
 	export let count: number;
 
-	const enhance = get_action<PageData>();
+	const enhance = getAction<PageData>();
 </script>
 
 <form

@@ -69,7 +69,7 @@ and this `+page.svelte`
 
 ```svelte
 <script lang="ts">
-	export let data;
+	const { data } = $props();
 </script>
 
 <form method="post" action="?/add">
@@ -88,9 +88,8 @@ if you want to optimistically add the comment using `optimistikit` you would nee
 ```svelte
 <script lang="ts">
 	import { optimistikit } from 'optimistikit';
-	export let data;
-	const { enhance, optimistic } = optimistikit<typeof data>();
-	$: optimistic_data = optimistic(data);
+	const { data } = $props();
+	const { enhance, data: optimistic_data } = optimistikit(() => data);
 </script>
 
 <form
@@ -111,7 +110,7 @@ if you want to optimistically add the comment using `optimistikit` you would nee
 </form>
 <ul>
 	<!-- use `optimistic_data` instead of `data` -->
-	{#each $optimistic_data.comments as comment}
+	{#each optimistic_data.comments as comment}
 		<li>{comment.content}</li>
 	{/each}
 </ul>
@@ -154,15 +153,15 @@ and this is the `+page.svelte`
 ```svelte
 <script lang="ts">
 	import { optimistikit } from 'optimistikit';
-	export let data;
-	const { enhance, optimistic } = optimistikit<typeof data>();
-	$: optimistic_data = optimistic(data);
+	const { data } = $props();
+
+	const { enhance, data: optimistic_data } = optimistikit(() => data);
 </script>
 
 <!-- rest of the page -->
 <ul>
 	<!-- use `optimistic_data` instead of `data` -->
-	{#each $optimistic_data.comments as comment}
+	{#each optimistic_data.comments as comment}
 		<li>
 			<form
 				method="post"
@@ -212,5 +211,17 @@ If you have a form in a nested component it can be tedious to pass either `data`
 
 The function `optimistikit` can optionally receive an object as argument where you can specify two values:
 
--   `key`: a string that allows you to have different actions/stores in the same route. Most of the times you will probably not need this since specifying a key also means that the updates from the forms will involve only the store returned from the `optimistic` function returned from this specific `optimistikit` function.
+-   `key`: a string that allows you to have different actions/stores in the same route. Most of the times you will probably not need this since specifying a key also means that the updates from the forms will involve only the state returned from that specific `optimistikit` function.
 -   `enhance`: some libraries like [superforms](https://superforms.rocks) provide a custom `enhance` function that is different from the one provided by SvelteKit. To allow you to use this libraries together with `optimistikit` you can pass a custom `enhance` function. It's important for this function to have the same signature as the sveltekit one.
+
+## What about svelte 4?
+
+If you are using `svelte@4` you really should upgrade to `svelte@5`...but if you can't you can use the legacy tag of this library that uses a store and has a slightly different and less ergonomic API.
+
+You can install it like this:
+
+```bash
+npm i optimistikit@legacy
+```
+
+Check the documentation [here!](https://github.com/paoloricciuti/optimistikit/tree/legacy#)

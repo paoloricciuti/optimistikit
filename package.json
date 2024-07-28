@@ -34,7 +34,7 @@
 		"build:playground5": "cd playground-5 && pnpm install --frozen-lockfile && pnpm run build",
 		"preview:playground5": "cd playground-5 && pnpm run preview",
 		"changeset": "changeset",
-		"release": "pnpm run build && changeset publish"
+		"release": "pnpm run build && changeset publish $(echo \"$RELEASE_TAG\")"
 	},
 	"exports": {
 		".": {

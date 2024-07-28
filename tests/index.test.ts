@@ -18,7 +18,8 @@ test.describe('non keyed forms', () => {
 		});
 		optimistic_list = page.getByTestId('optimistic-list');
 		list = page.getByTestId('list');
-		expect(await optimistic_list.locator('li').count()).toBe(1);
+		const lis = optimistic_list.locator('li');
+		expect(await lis.count()).toBe(1);
 		expect(await list.locator('li').count()).toBe(1);
 	});
 

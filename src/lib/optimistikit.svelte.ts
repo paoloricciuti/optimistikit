@@ -14,7 +14,7 @@ export function optimistikit<T>(
 ) {
 	const data = $state($state.snapshot(og_data()) as T);
 
-	$effect(() => {
+	$effect.pre(() => {
 		let final_data = $state.snapshot(og_data()) as T;
 		updates.forEach((update) => {
 			if (update.data) {

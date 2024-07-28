@@ -1,5 +1,11 @@
 # optimistikit
 
+## 1.0.1
+
+### Patch Changes
+
+-   679bd5f: fix: use $effect.pre
+
 ## 1.0.0
 
 ### Major Changes

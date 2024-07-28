@@ -1,5 +1,11 @@
 # optimistikit
 
+## 0.0.7
+
+### Patch Changes
+
+- c711c2d: chore: setup `legacy` publishing
+
 ## 0.0.6
 
 ### Patch Changes

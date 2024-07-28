@@ -1,6 +1,6 @@
 {
 	"name": "optimistikit",
-	"version": "0.0.6",
+	"version": "1.0.0",
 	"repository": "git+https://github.com/paoloricciuti/optimistikit.git",
 	"author": "Paolo Ricciuti",
 	"license": "MIT",

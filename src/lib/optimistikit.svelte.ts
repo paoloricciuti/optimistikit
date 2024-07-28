@@ -13,8 +13,9 @@ export function optimistikit<T>(
 	{ key = 'default', enhance = default_enhance } = {} as OptimistikitOptions,
 ) {
 	const data = $state($state.snapshot(og_data()) as T);
+	const updates = new SvelteSet<{ optimistic_update: (data: T) => void; data?: T }>();
 
-	$effect(() => {
+	$effect.pre(() => {
 		let final_data = $state.snapshot(og_data()) as T;
 		updates.forEach((update) => {
 			if (update.data) {
@@ -28,7 +29,6 @@ export function optimistikit<T>(
 			data[key] = final_data[key];
 		}
 	});
-	const updates = new SvelteSet<{ optimistic_update: (data: T) => void; data?: T }>();
 	const abort_controllers = new WeakMap<HTMLFormElement, AbortController>();
 	const updates_fns = new WeakMap<
 		HTMLFormElement,

@@ -10,16 +10,16 @@ test.describe('non keyed forms', () => {
 		await add_to_list_button.click();
 		let optimistic_list = page.getByTestId('optimistic-list');
 		let list = page.getByTestId('list');
-		expect(await optimistic_list.locator('li')).toHaveCount(1);
-		expect(await list.locator('li')).toHaveCount(0);
+		expect(optimistic_list.locator('li')).toHaveCount(1);
+		expect(list.locator('li')).toHaveCount(0);
 		await page.waitForRequest((req) => {
 			const url = new URL(req.url());
 			return url.pathname === '/__data.json';
 		});
 		optimistic_list = page.getByTestId('optimistic-list');
 		list = page.getByTestId('list');
-		expect(await optimistic_list.locator('li')).toHaveCount(1);
-		expect(await list.locator('li')).toHaveCount(1);
+		expect(optimistic_list.locator('li')).toHaveCount(1);
+		expect(list.locator('li')).toHaveCount(1);
 	});
 
 	test("optimistic data update immediately and actual data updates after the invalidation happens and it's has the same value (form in component)", async ({
@@ -30,16 +30,16 @@ test.describe('non keyed forms', () => {
 		await add_to_list_button.click();
 		let optimistic_list = page.getByTestId('optimistic-list');
 		let list = page.getByTestId('list');
-		expect(await optimistic_list.locator('li')).toHaveCount(1);
-		expect(await list.locator('li')).toHaveCount(0);
+		expect(optimistic_list.locator('li')).toHaveCount(1);
+		expect(list.locator('li')).toHaveCount(0);
 		await page.waitForRequest((req) => {
 			const url = new URL(req.url());
 			return url.pathname === '/__data.json';
 		});
 		optimistic_list = page.getByTestId('optimistic-list');
 		list = page.getByTestId('list');
-		expect(await optimistic_list.locator('li')).toHaveCount(1);
-		expect(await list.locator('li')).toHaveCount(1);
+		expect(optimistic_list.locator('li')).toHaveCount(1);
+		expect(list.locator('li')).toHaveCount(1);
 	});
 });
 

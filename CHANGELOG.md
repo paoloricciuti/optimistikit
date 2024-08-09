@@ -1,5 +1,11 @@
 # optimistikit
 
+## 1.0.2
+
+### Patch Changes
+
+-   a3f9e83: fix: correct peer dependencies
+
 ## 1.0.1
 
 ### Patch Changes

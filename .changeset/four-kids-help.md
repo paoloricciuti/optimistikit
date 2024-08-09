@@ -1,5 +1,5 @@
 ---
-"optimistikit": patch
+'optimistikit': patch
 ---
 
 fix: correct peer dependencies

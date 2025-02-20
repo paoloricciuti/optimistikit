@@ -39,8 +39,8 @@ importers:
         specifier: ^2.43.0
         version: 2.43.0(eslint@9.8.0)(svelte@5.20.2)
       globals:
-        specifier: ^15.8.0
-        version: 15.8.0
+        specifier: ^16.0.0
+        version: 16.0.0
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -1205,8 +1205,8 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  globals@15.8.0:
-    resolution: {integrity: sha512-VZAJ4cewHTExBWDHR6yptdIBlx9YSSZuwojj9Nt5mBRXQzrKakDsVKQ1J63sklLvzAJm0X5+RpO4i3Y2hcOnFw==}
+  globals@16.0.0:
+    resolution: {integrity: sha512-iInW14XItCXET01CQFqudPOWP2jYMl7T+QRQT+UNcR/iQncN/F0UNpgd76iFkBPgNQb4+X3LV9tLJYzwh+Gl3A==}
     engines: {node: '>=18'}
 
   globalyzer@0.1.0:
@@ -3113,7 +3113,7 @@ snapshots:
 
   globals@14.0.0: {}
 
-  globals@15.8.0: {}
+  globals@16.0.0: {}
 
   globalyzer@0.1.0: {}
 

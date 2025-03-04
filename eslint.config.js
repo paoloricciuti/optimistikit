@@ -53,6 +53,7 @@ export default tsEslint.config(
 					caughtErrorsIgnorePattern: '^(_|\\$\\$)',
 				},
 			],
+			'svelte/require-each-key': 'off',
 		},
 	},
 );

@@ -13,8 +13,8 @@ importers:
         version: link:..
     devDependencies:
       '@sveltejs/adapter-auto':
-        specifier: ^4.0.0
-        version: 4.0.0(@sveltejs/kit@2.5.18(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.23.1)(vite@6.0.1))(svelte@5.23.1)(vite@6.0.1))
+        specifier: ^5.0.0
+        version: 5.0.0(@sveltejs/kit@2.5.18(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.23.1)(vite@6.0.1))(svelte@5.23.1)(vite@6.0.1))
       '@sveltejs/kit':
         specifier: ^2.5.18
         version: 2.5.18(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.23.1)(vite@6.0.1))(svelte@5.23.1)(vite@6.0.1)
@@ -303,8 +303,8 @@ packages:
     peerDependencies:
       acorn: ^8.9.0
 
-  '@sveltejs/adapter-auto@4.0.0':
-    resolution: {integrity: sha512-kmuYSQdD2AwThymQF0haQhM8rE5rhutQXG4LNbnbShwhMO4qQGnKaaTy+88DuNSuoQDi58+thpq8XpHc1+oEKQ==}
+  '@sveltejs/adapter-auto@5.0.0':
+    resolution: {integrity: sha512-r645Oerr5E9pVX8Xk8ZkObRq/915y5HfZQjFFv4opbstvqQqHfgMhm46tR0iDDKqydZOgJCPa6RdQXh6i7G/2g==}
     peerDependencies:
       '@sveltejs/kit': ^2.0.0
 
@@ -763,7 +763,7 @@ snapshots:
     dependencies:
       acorn: 8.12.1
 
-  '@sveltejs/adapter-auto@4.0.0(@sveltejs/kit@2.5.18(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.23.1)(vite@6.0.1))(svelte@5.23.1)(vite@6.0.1))':
+  '@sveltejs/adapter-auto@5.0.0(@sveltejs/kit@2.5.18(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.23.1)(vite@6.0.1))(svelte@5.23.1)(vite@6.0.1))':
     dependencies:
       '@sveltejs/kit': 2.5.18(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.23.1)(vite@6.0.1))(svelte@5.23.1)(vite@6.0.1)
       import-meta-resolve: 4.1.0

@@ -52,7 +52,7 @@
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/kit": "^2.5.18",
 		"@sveltejs/package": "^2.3.2",
-		"@sveltejs/vite-plugin-svelte": "5.0.3",
+		"@sveltejs/vite-plugin-svelte": "5.1.0",
 		"@types/eslint": "^9.0.0",
 		"eslint": "^9.8.0",
 		"eslint-config-prettier": "^10.0.0",
